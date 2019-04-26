@@ -30,9 +30,13 @@ class PillowBackend(object):
 
     def _compress_image(self, image):
         quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 75)
-        image = image.resize(image.size, Image.ANTIALIAS).convert('RGB')
+        basewidth = 600
+        wpercent = (basewidth/float(image.size[0]))
+        hsize = int((float(image.size[1])*float(wpercent)))
+        image = image.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
         image_tmp = BytesIO()
         image.save(image_tmp, format="JPEG", quality=quality, optimize=True)
+        print("IS THIS GETTING CALLED")
         return image_tmp
 
     def save_as(self, filepath):
