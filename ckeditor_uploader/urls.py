@@ -7,15 +7,9 @@ from django.contrib.auth.decorators import login_required
 
 from . import views
 
-if django.VERSION >= (1, 8):
-    urlpatterns = [
-        url(r'^upload/', login_required(views.upload), name='ckeditor_upload'),
-        url(r'^browse/', login_required(views.browse), name='ckeditor_browse'),
-    ]
-else:
-    from django.conf.urls import patterns
-    urlpatterns = patterns(
-        '',
-        url(r'^upload/', staff_member_required(views.upload), name='ckeditor_upload'),
-        url(r'^browse/', never_cache(staff_member_required(views.browse)), name='ckeditor_browse'),
-    )
+
+urlpatterns = [
+    url(r'^upload/', login_required(views.upload), name='ckeditor_upload'),
+    url(r'^browse/', login_required(views.browse), name='ckeditor_browse'),
+]
+
