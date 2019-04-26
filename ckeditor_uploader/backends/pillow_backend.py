@@ -29,7 +29,7 @@ class PillowBackend(object):
             self.file_object.seek(0)
 
     def _compress_image(self, image):
-        quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 75)
+        quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 10)
         basewidth = 600
         wpercent = (basewidth/float(image.size[0]))
         hsize = int((float(image.size[1])*float(wpercent)))
