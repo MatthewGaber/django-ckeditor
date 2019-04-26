@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from . import views
 
 
+# removed the >1.8 check
+
 urlpatterns = [
     url(r'^upload/', login_required(views.upload), name='ckeditor_upload'),
     url(r'^browse/', login_required(views.browse), name='ckeditor_browse'),
