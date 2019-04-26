@@ -46,7 +46,7 @@ class PillowBackend(object):
 
         image = Image.open(self.file_object)
 
-        should_compress = getattr(settings, "CKEDITOR_FORCE_JPEG_COMPRESSION", False)
+        should_compress = getattr(settings, "CKEDITOR_FORCE_JPEG_COMPRESSION", True)
         is_animated = hasattr(image, 'is_animated') and image.is_animated
         if should_compress and not is_animated:
             file_object = self._compress_image(image)
