@@ -82,7 +82,7 @@ class ImageUploadView(generic.View):
             ck_func_num = escape(ck_func_num)
 
         filewrapper = backend(storage, uploaded_file)
-        allow_nonimages = getattr(settings, 'CKEDITOR_ALLOW_NONIMAGE_FILES', True)
+        allow_nonimages = getattr(settings, 'CKEDITOR_ALLOW_NONIMAGE_FILES', False)
         # Throws an error when an non-image file are uploaded.
         if not filewrapper.is_image and not allow_nonimages:
             return HttpResponse("""
