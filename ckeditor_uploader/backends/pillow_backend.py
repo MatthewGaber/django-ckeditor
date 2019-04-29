@@ -54,23 +54,24 @@ class PillowBackend(object):
             saved_path = self.storage_engine.save(filepath, self.file_object)
             return saved_path
 
-        # image = Image.open(self.file_object)
+        image = Image.open(self.file_object)
         # img_read = storage.open(self.image.name, 'r')
-        img_read = storage.open(filepath, 'r')
-        image = Image.open(img_read)
+        # img_read = storage.open(self., 'r')
+        # image = Image.open(img_read)
 
         should_compress = getattr(settings, "CKEDITOR_FORCE_JPEG_COMPRESSION", True)
         is_animated = hasattr(image, 'is_animated') and image.is_animated
         if should_compress and not is_animated:
-            file_object = self._compress_image(image)
-            filepath = "{}.jpg".format(os.path.splitext(filepath)[0])
+            # file_object = self._compress_image(image)
+            file_object = self.file_object
+            # filepath = "{}.jpg".format(os.path.splitext(filepath)[0])
             saved_path = self.storage_engine.save(filepath, file_object)
         else:
             file_object = self.file_object
             saved_path = self.storage_engine.save(filepath, self.file_object)
         
 
-        img_read.close()
+        # img_read.close()
         # if not is_animated:
             # self.create_thumbnail(file_object, saved_path)
         return saved_path
