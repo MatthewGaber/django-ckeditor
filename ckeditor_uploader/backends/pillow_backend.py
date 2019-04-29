@@ -10,6 +10,9 @@ from PIL import Image
 
 from ckeditor_uploader import utils
 
+import io
+from django.core.files.storage import default_storage as storage
+
 THUMBNAIL_SIZE = getattr(settings, "CKEDITOR_THUMBNAIL_SIZE", (75, 75))
 
 
@@ -29,14 +32,21 @@ class PillowBackend(object):
             self.file_object.seek(0)
 
     def _compress_image(self, image):
-        quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 10)
+        quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 50)
         basewidth = 600
         wpercent = (basewidth/float(image.size[0]))
         hsize = int((float(image.size[1])*float(wpercent)))
         image = image.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
-        image_tmp = BytesIO()
-        image.save(image_tmp, format="JPEG", quality=quality, optimize=True)
-        print("IS THIS GETTING CALLED")
+        in_mem_file = io.BytesIO()
+        img.save(in_mem_file, format='JPEG')
+        img_write = storage.open(self.image.name, 'w+')
+        img_write.write(in_mem_file.getvalue())
+        img_write.close()
+
+
+
+        # image_tmp = BytesIO()
+        # image.save(image_tmp, format="JPEG", quality=quality, optimize=True)
         return image_tmp
 
     def save_as(self, filepath):
@@ -44,7 +54,9 @@ class PillowBackend(object):
             saved_path = self.storage_engine.save(filepath, self.file_object)
             return saved_path
 
-        image = Image.open(self.file_object)
+        # image = Image.open(self.file_object)
+        img_read = storage.open(self.image.name, 'r')
+        image = Image.open(img_read)
 
         should_compress = getattr(settings, "CKEDITOR_FORCE_JPEG_COMPRESSION", True)
         is_animated = hasattr(image, 'is_animated') and image.is_animated
@@ -55,9 +67,11 @@ class PillowBackend(object):
         else:
             file_object = self.file_object
             saved_path = self.storage_engine.save(filepath, self.file_object)
+        
 
-        if not is_animated:
-            self.create_thumbnail(file_object, saved_path)
+        img_read.close()
+        # if not is_animated:
+            # self.create_thumbnail(file_object, saved_path)
         return saved_path
 
     def create_thumbnail(self, file_object, file_path):
