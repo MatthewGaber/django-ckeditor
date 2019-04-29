@@ -56,7 +56,7 @@ class PillowBackend(object):
 
         # image = Image.open(self.file_object)
         # img_read = storage.open(self.image.name, 'r')
-        img_read = storage.open(self.file_object, 'r')
+        img_read = storage.open(self.file.name, 'r')
         image = Image.open(img_read)
 
         should_compress = getattr(settings, "CKEDITOR_FORCE_JPEG_COMPRESSION", True)
