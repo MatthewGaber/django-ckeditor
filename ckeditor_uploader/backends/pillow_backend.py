@@ -6,7 +6,7 @@ from io import BytesIO
 from django.conf import settings
 from django.utils.functional import cached_property
 
-from PIL import Image
+from PIL import Image, ExifTags
 
 from ckeditor_uploader import utils
 
@@ -69,6 +69,21 @@ class PillowBackend(object):
             img_read = storage.open(filepath, 'r')
             imager = Image.open(img_read)
             #file_object = self._compress_image(imager)
+            try:
+                for orientation in ExifTags.TAGS.keys():
+                    if ExifTags.TAGS[orientation] == 'Orientation':
+                        break
+                exif = dict(imager._getexif().items())
+
+                if exif[orientation] == 3:
+                    imager = imager.rotate(180, expand=True)
+                elif exif[orientation] == 6:
+                    imager = imager.rotate(270, expand=True)
+                elif exif[orientation] == 8:
+                    imager = imager.rotate(90, expand=True)
+                
+            except (AttributeError, KeyError, IndexError):
+                pass
             quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 90)
             basewidth = 600
             wpercent = (basewidth/float(imager.size[0]))
