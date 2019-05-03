@@ -90,7 +90,7 @@ class ImageUploadView(generic.View):
                 window.parent.CKEDITOR.tools.callFunction({0}, '', 'Invalid file type.');
                 </script>""".format(ck_func_num))
 
-        if uploaded_file.size > 30000000:
+        if uploaded_file.size > 3000000:
                 return HttpResponse("""
                     <script type='text/javascript'>
                     window.parent.CKEDITOR.tools.callFunction({0}, '', 'File max size is 1MB.');

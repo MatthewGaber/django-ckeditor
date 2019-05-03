@@ -69,6 +69,11 @@ class PillowBackend(object):
             img_read = storage.open(filepath, 'r')
             imager = Image.open(img_read)
             #file_object = self._compress_image(imager)
+            quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 90)
+            basewidth = 600
+            wpercent = (basewidth/float(imager.size[0]))
+            hsize = int((float(imager.size[1])*float(wpercent)))
+            imager = imager.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
             try:
                 for orientation in ExifTags.TAGS.keys():
                     if ExifTags.TAGS[orientation] == 'Orientation':
@@ -84,11 +89,6 @@ class PillowBackend(object):
                 
             except (AttributeError, KeyError, IndexError):
                 pass
-            quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 90)
-            basewidth = 600
-            wpercent = (basewidth/float(imager.size[0]))
-            hsize = int((float(imager.size[1])*float(wpercent)))
-            imager = imager.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
             in_mem_file = io.BytesIO()
             imager.save(in_mem_file, format='JPEG')
             img_write = storage.open(filepath, 'w+')
