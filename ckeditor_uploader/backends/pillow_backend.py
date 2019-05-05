@@ -69,11 +69,12 @@ class PillowBackend(object):
             img_read = storage.open(filepath, 'r')
             imager = Image.open(img_read)
             #file_object = self._compress_image(imager)
-            quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 90)
-            basewidth = 600
-            wpercent = (basewidth/float(imager.size[0]))
-            hsize = int((float(imager.size[1])*float(wpercent)))
-            imager = imager.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
+            if imager.height > 600 or imager.width > 600:
+                quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 90)
+                basewidth = 600
+                wpercent = (basewidth/float(imager.size[0]))
+                hsize = int((float(imager.size[1])*float(wpercent)))
+                imager = imager.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
             try:
                 for orientation in ExifTags.TAGS.keys():
                     if ExifTags.TAGS[orientation] == 'Orientation':
