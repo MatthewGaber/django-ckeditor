@@ -70,32 +70,32 @@ class PillowBackend(object):
             imager = Image.open(img_read)
             #file_object = self._compress_image(imager)
             if imager.height > 600 or imager.width > 600:
-                quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 90)
+                # quality = getattr(settings, "CKEDITOR_IMAGE_QUALITY", 90)
+                try:
+                    for orientation in ExifTags.TAGS.keys():
+                        if ExifTags.TAGS[orientation] == 'Orientation':
+                            break
+                    exif = dict(imager._getexif().items())
+
+                    if exif[orientation] == 3:
+                        imager = imager.rotate(180, expand=True)
+                    elif exif[orientation] == 6:
+                        imager = imager.rotate(270, expand=True)
+                    elif exif[orientation] == 8:
+                        imager = imager.rotate(90, expand=True)
+                    
+                except (AttributeError, KeyError, IndexError):
+                    pass
                 basewidth = 600
                 wpercent = (basewidth/float(imager.size[0]))
                 hsize = int((float(imager.size[1])*float(wpercent)))
                 imager = imager.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
-            try:
-                for orientation in ExifTags.TAGS.keys():
-                    if ExifTags.TAGS[orientation] == 'Orientation':
-                        break
-                exif = dict(imager._getexif().items())
-
-                if exif[orientation] == 3:
-                    imager = imager.rotate(180, expand=True)
-                elif exif[orientation] == 6:
-                    imager = imager.rotate(270, expand=True)
-                elif exif[orientation] == 8:
-                    imager = imager.rotate(90, expand=True)
-                
-            except (AttributeError, KeyError, IndexError):
-                pass
-            in_mem_file = io.BytesIO()
-            imager.save(in_mem_file, format='JPEG')
-            img_write = storage.open(filepath, 'w+')
-            img_write.write(in_mem_file.getvalue())
-            img_write.close()
-            img_read.close()
+                in_mem_file = io.BytesIO()
+                imager.save(in_mem_file, format='JPEG')
+                img_write = storage.open(filepath, 'w+')
+                img_write.write(in_mem_file.getvalue())
+                img_write.close()
+                img_read.close()
         else:
             file_object = self.file_object
             saved_path = self.storage_engine.save(filepath, self.file_object)

@@ -164,25 +164,25 @@ def get_files_browse_urls(user=None):
     thumbnail and full image URL's for each file found.
     """
     files = []
-    for filename in get_image_files(user=user):
-        src = utils.get_media_url(filename)
-        if getattr(settings, 'CKEDITOR_IMAGE_BACKEND', None):
-            if is_valid_image_extension(src):
-                thumb = utils.get_media_url(utils.get_thumb_filename(filename))
-            else:
-                thumb = utils.get_icon_filename(filename)
-            visible_filename = os.path.split(filename)[1]
-            if len(visible_filename) > 20:
-                visible_filename = visible_filename[0:19] + '...'
-        else:
-            thumb = src
-            visible_filename = os.path.split(filename)[1]
-        files.append({
-            'thumb': thumb,
-            'src': src,
-            'is_image': is_valid_image_extension(src),
-            'visible_filename': visible_filename,
-        })
+    # for filename in get_image_files(user=user):
+    #     src = utils.get_media_url(filename)
+    #     if getattr(settings, 'CKEDITOR_IMAGE_BACKEND', None):
+    #         if is_valid_image_extension(src):
+    #             thumb = utils.get_media_url(utils.get_thumb_filename(filename))
+    #         else:
+    #             thumb = utils.get_icon_filename(filename)
+    #         visible_filename = os.path.split(filename)[1]
+    #         if len(visible_filename) > 20:
+    #             visible_filename = visible_filename[0:19] + '...'
+    #     else:
+    #         thumb = src
+    #         visible_filename = os.path.split(filename)[1]
+    #     files.append({
+    #         'thumb': thumb,
+    #         'src': src,
+    #         'is_image': is_valid_image_extension(src),
+    #         'visible_filename': visible_filename,
+    #     })
 
     return files
 
