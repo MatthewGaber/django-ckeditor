@@ -89,9 +89,12 @@ class PillowBackend(object):
                 basewidth = 600
                 wpercent = (basewidth/float(imager.size[0]))
                 hsize = int((float(imager.size[1])*float(wpercent)))
-                imager = imager.resize((basewidth,hsize), Image.ANTIALIAS).convert('RGB')
+                imager = imager.resize((basewidth,hsize), Image.ANTIALIAS)
                 in_mem_file = io.BytesIO()
-                imager.save(in_mem_file, format='JPEG')
+                if filepath.endswith('.jpg'):
+                    imager.save(in_mem_file, format='JPEG')
+                else:
+                    imager.save(in_mem_file, format='PNG')
                 img_write = storage.open(filepath, 'w+')
                 img_write.write(in_mem_file.getvalue())
                 img_write.close()
